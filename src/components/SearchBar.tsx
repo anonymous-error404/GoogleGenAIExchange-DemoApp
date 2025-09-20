@@ -72,7 +72,7 @@ export default function SearchBar() {
     navigate(`/user/${userId}`)
   }
 
-  function handleTweetClick(tweetId: string) {
+  function handleTweetClick(_tweetId: string) {
     setShowResults(false)
     setQuery('')
     // Could scroll to tweet here

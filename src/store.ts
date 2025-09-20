@@ -381,7 +381,7 @@ export function toggleLike(tweetId: string): void {
   }
   
   // Add notification for like
-  if (!wasLiked && tweet.authorId !== state.currentUserId) {
+  if (!wasLiked && tweet.authorId !== state.currentUserId && state.currentUserId) {
     addNotification({
       type: 'like',
       fromUserId: state.currentUserId,
@@ -423,7 +423,7 @@ export function toggleRetweet(tweetId: string): void {
   }
   
   // Add notification for retweet
-  if (!wasRetweeted && tweet.authorId !== state.currentUserId) {
+  if (!wasRetweeted && tweet.authorId !== state.currentUserId && state.currentUserId) {
     addNotification({
       type: 'retweet',
       fromUserId: state.currentUserId,
@@ -468,7 +468,7 @@ export function addReply(parentId: string, content: string): void {
   state = { ...state, tweets: [reply, ...state.tweets] }
   
   // Add notification for reply
-  if (parentTweet.authorId !== state.currentUserId) {
+  if (parentTweet.authorId !== state.currentUserId && state.currentUserId) {
     addNotification({
       type: 'reply',
       fromUserId: state.currentUserId,
@@ -524,7 +524,7 @@ export function toggleFollow(userId: string): void {
   }
   
   // Add notification for follow
-  if (!isFollowing) {
+  if (!isFollowing && state.currentUserId) {
     addNotification({
       type: 'follow',
       fromUserId: state.currentUserId,
@@ -552,8 +552,8 @@ export function getFollowingFeed(userId: string): Tweet[] {
   
   return followingTweets
     .map(id => state.tweets.find(t => t.id === id))
-    .filter(Boolean)
-    .sort((a, b) => b.createdAt - a.createdAt) as Tweet[]
+    .filter((tweet): tweet is Tweet => Boolean(tweet))
+    .sort((a, b) => b.createdAt - a.createdAt)
 }
 
 export function getLikedTweets(userId: string): Tweet[] {

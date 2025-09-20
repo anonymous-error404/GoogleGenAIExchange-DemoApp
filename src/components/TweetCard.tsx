@@ -1,7 +1,7 @@
 import { getState, toggleLike, toggleRetweet, addReply } from '../store-mongodb'
-import type { Tweet } from '../store'
+import type { Tweet } from '../store-mongodb'
 import { useEffect, useState } from 'react'
-import { subscribe } from '../store'
+import { subscribe } from '../store-mongodb'
 import { verifyTweetContent, type VerificationResult } from '../services/verification'
 import VerificationModal from './VerificationModal'
 import VerificationLoading from './VerificationLoading'
@@ -34,13 +34,15 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
   }, [])
 
   // Handle both MongoDB format (author as object) and old format (authorId as string)
-  const author = tweet.author || state.users[tweet.authorId]
+  const author = tweet.author
   const isReply = !!tweet.parentTweet
+  const likedByMe = state.currentUserId ? tweet.likes.includes(state.currentUserId) : false
+  const retweetedByMe = state.currentUserId ? tweet.retweets.some(r => r.user === state.currentUserId) : false
 
   function handleReply(e: React.FormEvent) {
     e.preventDefault()
     if (!replyText.trim()) return
-    addReply(tweet.id, replyText.trim())
+    addReply(tweet._id, replyText.trim())
     setReplyText('')
     setShowReply(false)
   }
@@ -85,7 +87,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
   function handleConfirmVerification() {
     // Mark the tweet as verified
     // In a real app, this would update the tweet in the database
-    console.log('[TweetCard] Tweet marked as verified:', tweet.id)
+    console.log('[TweetCard] Tweet marked as verified:', tweet._id)
     setIsVerified(true)
     setVerificationData(verificationResult) // Store the verification result
     setShowVerificationModal(false)
@@ -95,7 +97,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
   }
 
   // Helper functions for verification display
-  function getVerificationBannerStyle(verdict: string, confidence: number) {
+  function getVerificationBannerStyle(verdict: string) {
     const lowerVerdict = verdict.toLowerCase()
     if (lowerVerdict.includes('true') || lowerVerdict.includes('accurate') || lowerVerdict.includes('real')) {
       return {
@@ -259,7 +261,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
               border: '2px solid',
               position: 'relative',
               overflow: 'hidden',
-              ...(getVerificationBannerStyle(verificationData.verdict, verificationData.confidence))
+              ...(getVerificationBannerStyle(verificationData.verdict))
             }}>
               {/* Background Pattern */}
               <div style={{
@@ -378,17 +380,17 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
               }}
             >
               <span style={{ marginRight: '8px', fontSize: '16px' }}>💬</span>
-              {tweet.replyCount || tweet.replies?.length || 0}
+              {tweet.replyCount || tweet.replies.length || 0}
             </button>
 
             {/* Retweet */}
             <button 
-              onClick={() => toggleRetweet((tweet as any)._id || (tweet as any).id)} 
+              onClick={() => toggleRetweet(tweet._id)} 
               className="btn btn-ghost btn-sm hover-lift hover-glow"
               style={{ 
                 padding: '12px 16px',
                 fontSize: '15px',
-                color: (tweet as any).retweetedByMe ? 'var(--accent)' : 'var(--text-muted)',
+                color: retweetedByMe ? 'var(--accent)' : 'var(--text-muted)',
                 fontWeight: '600',
                 borderRadius: 'var(--radius-lg)',
                 background: 'var(--bg-glass)',
@@ -398,17 +400,17 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
               }}
             >
               <span style={{ marginRight: '8px', fontSize: '16px' }}>🔄</span>
-              {tweet.retweetCount || tweet.retweets?.length || 0}
+              {tweet.retweetCount || tweet.retweets.length || 0}
             </button>
 
             {/* Like */}
             <button 
-              onClick={() => toggleLike((tweet as any)._id || (tweet as any).id)} 
+              onClick={() => toggleLike(tweet._id)} 
               className="btn btn-ghost btn-sm hover-lift hover-glow"
               style={{ 
                 padding: '12px 16px',
                 fontSize: '15px',
-                color: (tweet as any).likedByMe ? '#ef4444' : 'var(--text-muted)',
+                color: likedByMe ? '#ef4444' : 'var(--text-muted)',
                 fontWeight: '600',
                 borderRadius: 'var(--radius-lg)',
                 background: 'var(--bg-glass)',
@@ -417,8 +419,8 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                 WebkitBackdropFilter: 'blur(10px)'
               }}
             >
-              <span style={{ marginRight: '8px', fontSize: '16px' }}>{(tweet as any).likedByMe ? '❤️' : '🤍'}</span>
-              {tweet.likeCount || tweet.likes?.length || 0}
+              <span style={{ marginRight: '8px', fontSize: '16px' }}>{likedByMe ? '❤️' : '🤍'}</span>
+              {tweet.likeCount || tweet.likes.length || 0}
             </button>
 
             {/* Verify Button / Verified Status */}

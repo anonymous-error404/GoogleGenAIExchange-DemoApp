@@ -6,7 +6,7 @@ import { getState, subscribe, searchTweets, searchUsers, toggleFollow } from '..
 
 export default function SearchPage() {
   const [state, setState] = useState(getState())
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState<'all' | 'tweets' | 'users'>('all')
   const [searchResults, setSearchResults] = useState<{tweets: any[], users: any[]}>({ tweets: [], users: [] })
   const [isSearching, setIsSearching] = useState(false)
@@ -67,16 +67,6 @@ export default function SearchPage() {
     )
   }
 
-  function formatTime(timestamp: number): string {
-    const diff = Date.now() - timestamp
-    const minutes = Math.floor(diff / (1000 * 60))
-    if (minutes < 1) return 'now'
-    if (minutes < 60) return `${minutes}m`
-    const hours = Math.floor(minutes / 60)
-    if (hours < 24) return `${hours}h`
-    const days = Math.floor(hours / 24)
-    return `${days}d`
-  }
 
   function handleUserClick(userId: string) {
     console.log('Search - handleUserClick called with userId:', userId)

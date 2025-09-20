@@ -56,6 +56,11 @@ export type AppState = {
   searchQuery: string
   loading: boolean
   error: string | null
+  userFeeds?: Record<string, string[]>
+  userLikes?: Record<string, string[]>
+  userRetweets?: Record<string, string[]>
+  userFollowing?: Record<string, string[]>
+  userFollowers?: Record<string, string[]>
 }
 
 let state: AppState = {

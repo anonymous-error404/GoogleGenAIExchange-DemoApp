@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 // keep existing store login to avoid breaking flows
 import { login as localLogin } from '../store-mongodb'

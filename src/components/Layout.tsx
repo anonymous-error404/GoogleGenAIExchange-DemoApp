@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState } from 'react'
+import { type PropsWithChildren, useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { getState, subscribe, logout, toggleTheme } from '../store-mongodb'
 import SearchBar from './SearchBar'

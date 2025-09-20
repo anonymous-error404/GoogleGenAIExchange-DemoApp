@@ -91,7 +91,7 @@ export default function HomePage() {
         {feedTweets.length > 0 ? (
           <div style={{ display: 'grid', gap: '20px' }}>
             {feedTweets.map((tweet, index) => (
-              <div key={tweet._id || tweet.id} className="animate-slide-in-up" style={{ animationDelay: `${0.3 + index * 0.1}s` }}>
+              <div key={tweet._id} className="animate-slide-in-up" style={{ animationDelay: `${0.3 + index * 0.1}s` }}>
                 <TweetCard tweet={tweet} />
               </div>
             ))}

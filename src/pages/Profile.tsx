@@ -28,7 +28,7 @@ export default function ProfilePage() {
   const retweetedTweets = getRetweetedTweets(state.currentUserId!)
 
   const suggestedUsers = Object.values(state.users)
-    .filter(user => user.id !== state.currentUserId)
+    .filter(user => user._id !== state.currentUserId)
     .slice(0, 3)
 
   const tabs = [
@@ -184,7 +184,7 @@ export default function ProfilePage() {
         {/* Content */}
         <div>
           {getCurrentTweets().length > 0 ? (
-            getCurrentTweets().map(tweet => <TweetCard key={tweet._id || tweet.id} tweet={tweet} />)
+            getCurrentTweets().map(tweet => <TweetCard key={tweet._id} tweet={tweet} />)
           ) : (
             <div className="card" style={{ 
               padding: '60px 40px',
@@ -244,7 +244,7 @@ export default function ProfilePage() {
             <div style={{ display: 'grid', gap: '16px' }}>
               {suggestedUsers.map(user => (
                 <div 
-                  key={user.id} 
+                  key={user._id} 
                   onClick={() => handleUserClick(user._id)}
                   className="hover-lift" 
                   style={{
@@ -300,15 +300,15 @@ export default function ProfilePage() {
                     )}
                   </div>
                   <button
-                    onClick={() => toggleFollow(user.id)}
-                    className={`btn ${currentUser.following.includes(user.id) ? 'btn-secondary' : 'btn-primary'} btn-sm hover-glow`}
+                    onClick={() => toggleFollow(user._id)}
+                    className={`btn ${currentUser.following.includes(user._id) ? 'btn-secondary' : 'btn-primary'} btn-sm hover-glow`}
                     style={{
                       fontSize: '14px',
                       fontWeight: '600',
                       minWidth: '80px'
                     }}
                   >
-                    {currentUser.following.includes(user.id) ? 'Following' : 'Follow'}
+                    {currentUser.following.includes(user._id) ? 'Following' : 'Follow'}
                   </button>
                 </div>
               ))}

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import { addTweet } from '../store-mongodb'
 
 export default function TweetComposer() {

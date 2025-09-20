@@ -263,7 +263,7 @@ export default function UserProfilePage() {
           
           {userTweets.length > 0 ? (
             userTweets.map(tweet => (
-              <TweetCard key={tweet._id || tweet.id} tweet={tweet} />
+              <TweetCard key={tweet._id} tweet={tweet} />
             ))
           ) : (
             <div className="card" style={{ 

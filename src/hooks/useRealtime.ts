@@ -35,13 +35,15 @@ export function useRealtime() {
         // Create a temporary user for the tweet
         const tempUserId = `temp_${Math.random().toString(36).slice(2, 9)}`
         const tempUser = {
-          id: tempUserId,
+          _id: tempUserId,
           handle: randomUser.handle,
           name: randomUser.name,
           bio: '',
           followers: [],
           following: [],
-          createdAt: Date.now()
+          followerCount: 0,
+          followingCount: 0,
+          createdAt: new Date().toISOString()
         }
         
         // Add user to state
