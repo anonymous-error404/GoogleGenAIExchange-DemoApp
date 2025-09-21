@@ -135,7 +135,7 @@ export default function Login() {
             Connect, Share, and Discover<br/>
             For Demo, create a new account or login using demo credentials <br/>
             demo username : Yash <br/>
-            demo password : Yash123
+            demo password : 1234
           </p>
         </div>
 
