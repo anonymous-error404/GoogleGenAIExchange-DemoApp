@@ -132,7 +132,10 @@ export default function Login() {
             margin: 0,
             fontWeight: '500'
           }}>
-            Connect, Share, and Discover
+            Connect, Share, and Discover<br />
+            For Demo, create a new account or login using demo credentials <br/>
+            demo username : 
+            demo password : 
           </p>
         </div>
 
