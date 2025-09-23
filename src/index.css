@@ -736,7 +736,12 @@ body::-webkit-scrollbar,
     font-size: 14px;
   }
 }
-
+/* Hide sidebar toggle button on laptop/desktop */
+@media (min-width: 1024px) {
+  .sidebar-toggle {
+    display: none !important;
+  }
+}
 @media (max-width: 768px) {
   .btn {
     padding: 10px 16px;
