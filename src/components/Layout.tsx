@@ -72,7 +72,7 @@ export default function Layout({ children }: PropsWithChildren) {
           <div className="mobile-sidebar-section">
             <h3>🧭 Navigation</h3>
             <nav style={{ display: 'grid', gap: '12px' }}>
-              {navItems.filter(item => item.to !== '/search').map((item, index) => (
+              {navItems.filter(item => item.to !== '/search').map((item) => (
                 <NavLink 
                   key={item.to}
                   to={item.to} 
