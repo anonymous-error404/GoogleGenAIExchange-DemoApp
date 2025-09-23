@@ -133,7 +133,11 @@ export default function Login() {
             margin: 0,
             fontWeight: '500'
           }}>
-            Connect, Share, and Discover
+            Connect, Share, and Discover <br/>
+            For accessing the app, create a new account <br/>
+            or use demo credentials : <br/>
+            demo username : Yash <br/>
+            demo password : 1234 <br/>
           </p>
         </div>
 
