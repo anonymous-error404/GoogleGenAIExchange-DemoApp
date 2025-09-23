@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://realitycheck-ai-v1.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3001/api';
 
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -123,6 +123,13 @@ class ApiService {
 
   async searchTweets(query: string) {
     return this.request<any[]>(`/tweets/search/${encodeURIComponent(query)}`);
+  }
+
+  async deleteTweet(tweetId: string, userId: string) {
+    return this.request<any>(`/tweets/${tweetId}`, {
+      method: 'DELETE',
+      body: JSON.stringify({ userId }),
+    });
   }
 
   // Notification endpoints
