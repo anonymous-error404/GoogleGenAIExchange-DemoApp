@@ -200,7 +200,7 @@ export default function Layout({ children }: PropsWithChildren) {
           <div className="mobile-sidebar-section">
             <h3>🔥 What's happening</h3>
             <div style={{ display: 'grid', gap: '16px' }}>
-              {['#ReactJS', '#TypeScript', '#WebDev', '#JavaScript', '#AI'].map((tag, index) => (
+              {['#ReactJS', '#TypeScript', '#WebDev', '#JavaScript', '#AI'].map((tag) => (
                 <div 
                   key={tag}
                   className="hover-lift hover-glow"
