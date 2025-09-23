@@ -38,6 +38,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
   const isReply = !!tweet.parentTweet
   const likedByMe = state.currentUserId ? tweet.likes.includes(state.currentUserId) : false
   const retweetedByMe = state.currentUserId ? tweet.retweets.some(r => r.user === state.currentUserId) : false
+  const isMyTweet = state.currentUserId && author._id === state.currentUserId
 
   function handleReply(e: React.FormEvent) {
     e.preventDefault()
@@ -45,6 +46,16 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
     addReply(tweet._id, replyText.trim())
     setReplyText('')
     setShowReply(false)
+  }
+
+  async function handleDelete() {
+    if (window.confirm('Are you sure you want to delete this tweet? This action cannot be undone.')) {
+      try {
+        await deleteTweet(tweet._id)
+      } catch (error) {
+        console.error('Failed to delete tweet:', error)
+      }
+    }
   }
 
   async function handleVerify() {
@@ -462,6 +473,29 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                 <span style={{ fontSize: '16px' }}>✅</span>
                 <span>Verified</span>
               </div>
+            )}
+
+            {/* Delete Button - Only show for own tweets */}
+            {isMyTweet && (
+              <button
+                onClick={handleDelete}
+                className="btn btn-danger btn-sm hover-lift hover-glow"
+                style={{
+                  padding: '12px 16px',
+                  fontSize: '15px',
+                  fontWeight: '700',
+                  color: '#ef4444',
+                  borderRadius: 'var(--radius-lg)',
+                  background: 'var(--bg-glass)',
+                  border: '1px solid #ef4444',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <span style={{ marginRight: '8px', fontSize: '16px' }}>🗑️</span>
+                Delete
+              </button>
             )}
 
           </div>
