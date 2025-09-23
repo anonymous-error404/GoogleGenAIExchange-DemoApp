@@ -134,7 +134,7 @@ export default function Login() {
             fontWeight: '500'
           }}>
             Connect, Share, and Discover <br/>
-            For accessing the app, create a new account <br/>
+            For accessing the app, create an account <br/>
             or use demo credentials : <br/>
             demo username : Yash <br/>
             demo password : 1234 <br/>
