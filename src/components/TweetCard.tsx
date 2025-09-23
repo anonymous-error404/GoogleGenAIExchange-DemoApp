@@ -271,6 +271,105 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
             {tweet.content}
           </div>
 
+          {/* Verification Status Banner */
+          /* Mobile-friendly layout via CSS classes below */}
+          {isVerified && verificationData && (
+            <div style={{
+              marginBottom: '20px',
+              borderRadius: '16px',
+              padding: '16px 20px',
+              border: '2px solid',
+              position: 'relative',
+              overflow: 'hidden',
+              ...(getVerificationBannerStyle(verificationData.verdict))
+            }} className="verification-banner-card">
+              {/* Background Pattern */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                opacity: 0.1,
+                background: `url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='a' patternUnits='userSpaceOnUse' width='20' height='20' patternTransform='scale(0.5) rotate(0)'%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='none'/%3E%3Cpath d='M10 10m-1 0a1 1 0 1 1 2 0a1 1 0 1 1-2 0' stroke='currentColor' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23a)'/%3E%3C/svg%3E")`,
+              }} />
+              
+              <div style={{
+                position: 'relative',
+                zIndex: 1
+              }} className="verification-banner">
+                {/* Verification Icon */}
+                <div style={{
+                  fontSize: '24px',
+                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+                }} className="verification-banner__icon">
+                  {getVerificationIcon(verificationData.verdict)}
+                </div>
+                
+                <div style={{ flex: 1 }} className="verification-banner__content">
+                  {/* Verification Title */}
+                  <div style={{
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    marginBottom: '4px',
+                    color: 'inherit'
+                  }} className="verification-banner__title">
+                    {getVerificationTitle(verificationData.verdict)}
+                  </div>
+                  
+                  {/* Confidence Level */}
+                  <div style={{
+                    fontSize: '14px',
+                    opacity: 0.9,
+                    marginBottom: '8px'
+                  }} className="verification-banner__subtitle">
+                    {getConfidenceText(verificationData.confidence)} • Verified by AI
+                  </div>
+                  
+                  {/* Confidence Bar */}
+                  <div style={{
+                    width: '100%',
+                    height: '6px',
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    borderRadius: '3px',
+                    overflow: 'hidden'
+                  }} className="verification-banner__bar">
+                    <div style={{
+                      height: '100%',
+                      width: `${verificationData.confidence * 100}%`,
+                      background: 'rgba(255,255,255,0.8)',
+                      borderRadius: '3px',
+                      transition: 'width 0.8s ease'
+                    }} className="verification-banner__bar-fill" />
+                  </div>
+                </div>
+                
+                {/* Confidence Percentage */}
+                <div style={{
+                  fontSize: '18px',
+                  fontWeight: '800',
+                  color: 'inherit'
+                }} className="verification-banner__percent">
+                  {Math.round(verificationData.confidence * 100)}%
+                </div>
+              </div>
+              
+              {/* Verification Details */}
+              <div style={{
+                marginTop: '12px',
+                padding: '12px',
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                borderRadius: '12px',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                color: 'inherit',
+                opacity: 0.9
+              }} className="verification-banner__details">
+                <strong>Analysis:</strong> {verificationData.reason}
+              </div>
+            </div>
+          )}
+          
           {/* Verification Status Banner */}
           {isVerified && verificationData && (
             <div style={{
