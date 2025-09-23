@@ -9,8 +9,9 @@ export interface VerificationResult {
 
 export async function verifyTweetContent(tweetId: string | number | undefined, content: string): Promise<VerificationResult | null> {
   try {
-    console.log('[VerifyTweet][client] Sending to server:', { tweetId, content })
-    const response = await api.verifyTweet({ tweetId: String(tweetId || ''), content })
+    const date = new Date().toISOString()
+    console.log('[VerifyTweet][client] Sending to server:', { tweetId, content, date })
+    const response = await api.verifyTweet({ tweetId: String(tweetId || ''), content, date })
     console.log('[VerifyTweet][server->client] Full response:', response)
     
     // Extract the verification result from the response
