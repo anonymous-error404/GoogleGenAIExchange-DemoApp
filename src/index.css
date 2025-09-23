@@ -691,25 +691,20 @@ h1, h2, h3, h4, h5, h6 {
   transform: rotate(5deg);
 }
 
-/* Modern Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Hide scrollbars globally */
+html, body {
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE/Edge */
+  -ms-overflow-style: none;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-tertiary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--gradient-primary);
-  border-radius: 4px;
-  box-shadow: var(--shadow);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-hover);
-  box-shadow: var(--shadow-md);
+/* WebKit (Chrome/Safari/Opera/Edge Chromium) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 /* Focus States */
