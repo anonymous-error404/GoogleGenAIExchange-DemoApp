@@ -183,7 +183,7 @@ class ApiService {
   }
 
   // Verification
-  async verifyTweet(payload: { tweetId?: string; content: string }) {
+  async verifyTweet(payload: { tweetId?: string; content: string; date?: string }) {
     return this.request<any>('/verify', {
       method: 'POST',
       body: JSON.stringify(payload),
