@@ -226,6 +226,37 @@ body::before {
     word-wrap: break-word;
   }
   
+/* Verification banner inside tweets - mobile friendly */
+.verification-banner-card { 
+  /* container already colored inline; just layout tweaks */
+}
+
+.verification-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.verification-banner__icon { flex-shrink: 0; }
+.verification-banner__percent { flex-shrink: 0; }
+
+@media (max-width: 768px) {
+  .verification-banner-card { 
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+  }
+  .verification-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .verification-banner__title { font-size: 14px !important; }
+  .verification-banner__subtitle { font-size: 12px !important; margin-bottom: 6px !important; }
+  .verification-banner__percent { font-size: 14px !important; margin-top: 6px; }
+  .verification-banner__bar { height: 5px !important; }
+  .verification-banner__details { font-size: 13px !important; }
+}
+  
   /* Fix profile tabs overflow */
   .card .btn {
     min-width: 0;
