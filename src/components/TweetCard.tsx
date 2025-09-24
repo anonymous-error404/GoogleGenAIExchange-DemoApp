@@ -176,7 +176,10 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
         overflow: 'hidden',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box'
       }}>
       {/* Reply indicator */}
       {isReply && (
@@ -191,7 +194,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
         }} />
       )}
 
-      <div style={{ display: 'flex', gap: '16px' }}>
+      <div style={{ display: 'flex', gap: '16px', width: '100%', maxWidth: '100%' }}>
         {/* Avatar */}
         <div className="hover-scale" style={{ 
           width: '56px', 
@@ -211,14 +214,17 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
           {author?.name?.charAt(0).toUpperCase() || '?'}
         </div>
 
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ flex: 1, minWidth: 0, maxWidth: '100%', overflow: 'hidden' }}>
           {/* Header */}
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
             gap: '8px', 
             marginBottom: '8px',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            width: '100%',
+            maxWidth: '100%',
+            overflow: 'hidden'
           }}>
             <h3 style={{ 
               margin: 0, 
@@ -256,12 +262,17 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
             lineHeight: '1.6',
             color: 'var(--text)',
             wordBreak: 'break-word',
-            fontWeight: '400'
+            overflowWrap: 'break-word',
+            wordWrap: 'break-word',
+            fontWeight: '400',
+            maxWidth: '100%',
+            overflow: 'hidden'
           }}>
             {tweet.content}
           </div>
 
-          {/* Verification Status Banner */}
+          {/* Verification Status Banner */
+          /* Mobile-friendly layout via CSS classes below */}
           {isVerified && verificationData && (
             <div style={{
               marginBottom: '20px',
@@ -271,7 +282,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
               position: 'relative',
               overflow: 'hidden',
               ...(getVerificationBannerStyle(verificationData.verdict))
-            }}>
+            }} className="verification-banner-card">
               {/* Background Pattern */}
               <div style={{
                 position: 'absolute',
@@ -285,27 +296,24 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
               
               <div style={{
                 position: 'relative',
-                zIndex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
+                zIndex: 1
+              }} className="verification-banner">
                 {/* Verification Icon */}
                 <div style={{
                   fontSize: '24px',
                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
-                }}>
+                }} className="verification-banner__icon">
                   {getVerificationIcon(verificationData.verdict)}
                 </div>
                 
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1 }} className="verification-banner__content">
                   {/* Verification Title */}
                   <div style={{
                     fontSize: '16px',
                     fontWeight: '700',
                     marginBottom: '4px',
                     color: 'inherit'
-                  }}>
+                  }} className="verification-banner__title">
                     {getVerificationTitle(verificationData.verdict)}
                   </div>
                   
@@ -314,7 +322,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                     fontSize: '14px',
                     opacity: 0.9,
                     marginBottom: '8px'
-                  }}>
+                  }} className="verification-banner__subtitle">
                     {getConfidenceText(verificationData.confidence)} • Verified by AI
                   </div>
                   
@@ -325,14 +333,14 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                     backgroundColor: 'rgba(255,255,255,0.2)',
                     borderRadius: '3px',
                     overflow: 'hidden'
-                  }}>
+                  }} className="verification-banner__bar">
                     <div style={{
                       height: '100%',
                       width: `${verificationData.confidence * 100}%`,
                       background: 'rgba(255,255,255,0.8)',
                       borderRadius: '3px',
                       transition: 'width 0.8s ease'
-                    }} />
+                    }} className="verification-banner__bar-fill" />
                   </div>
                 </div>
                 
@@ -341,7 +349,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                   fontSize: '18px',
                   fontWeight: '800',
                   color: 'inherit'
-                }}>
+                }} className="verification-banner__percent">
                   {Math.round(verificationData.confidence * 100)}%
                 </div>
               </div>
@@ -356,7 +364,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                 lineHeight: '1.5',
                 color: 'inherit',
                 opacity: 0.9
-              }}>
+              }} className="verification-banner__details">
                 <strong>Analysis:</strong> {verificationData.reason}
               </div>
             </div>
@@ -367,10 +375,14 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
-            gap: '32px',
+            gap: '16px',
             marginTop: '16px',
             paddingTop: '16px',
-            borderTop: '1px solid var(--border-light)'
+            borderTop: '1px solid var(--border-light)',
+            flexWrap: 'wrap',
+            width: '100%',
+            maxWidth: '100%',
+            overflow: 'hidden'
           }}>
             {/* Reply */}
             <button 
@@ -385,11 +397,13 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                 background: 'var(--bg-glass)',
                 border: '1px solid var(--border)',
                 backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)'
+                WebkitBackdropFilter: 'blur(10px)',
+                flex: '1',
+                minWidth: '80px'
               }}
             >
               <span style={{ marginRight: '8px', fontSize: '16px' }}>💬</span>
-              {tweet.replyCount || tweet.replies.length || 0}
+              <span className="desktop-only">{tweet.replyCount || tweet.replies.length || 0}</span>
             </button>
 
             {/* Retweet */}
@@ -405,11 +419,13 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                 background: 'var(--bg-glass)',
                 border: '1px solid var(--border)',
                 backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)'
+                WebkitBackdropFilter: 'blur(10px)',
+                flex: '1',
+                minWidth: '80px'
               }}
             >
               <span style={{ marginRight: '8px', fontSize: '16px' }}>🔄</span>
-              {tweet.retweetCount || tweet.retweets.length || 0}
+              <span className="desktop-only">{tweet.retweetCount || tweet.retweets.length || 0}</span>
             </button>
 
             {/* Like */}
@@ -425,11 +441,13 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                 background: 'var(--bg-glass)',
                 border: '1px solid var(--border)',
                 backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)'
+                WebkitBackdropFilter: 'blur(10px)',
+                flex: '1',
+                minWidth: '80px'
               }}
             >
               <span style={{ marginRight: '8px', fontSize: '16px' }}>{likedByMe ? '❤️' : '🤍'}</span>
-              {tweet.likeCount || tweet.likes.length || 0}
+              <span className="desktop-only">{tweet.likeCount || tweet.likes.length || 0}</span>
             </button>
 
             {/* Verify Button / Verified Status */}
@@ -449,13 +467,15 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                   background: 'var(--bg-glass)',
                   border: '1px solid var(--border)',
                   backdropFilter: 'blur(10px)',
-                  WebkitBackdropFilter: 'blur(10px)'
+                  WebkitBackdropFilter: 'blur(10px)',
+                  flex: '1',
+                  minWidth: '80px'
                 }}
               >
                 <span style={{ marginRight: '8px', fontSize: '16px' }}>
                   {isVerifying ? '⏳' : '✅'}
                 </span>
-                {isVerifying ? 'Verifying...' : 'Verify'}
+                <span className="desktop-only">{isVerifying ? 'Verifying...' : 'Verify'}</span>
               </button>
             ) : (
               <div style={{
@@ -468,10 +488,13 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                 border: '2px solid #10b981',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                flex: '1',
+                minWidth: '80px',
+                justifyContent: 'center'
               }}>
                 <span style={{ fontSize: '16px' }}>✅</span>
-                <span>Verified</span>
+                <span className="desktop-only">Verified</span>
               </div>
             )}
 
@@ -490,11 +513,13 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
                   border: '1px solid #ef4444',
                   backdropFilter: 'blur(10px)',
                   WebkitBackdropFilter: 'blur(10px)',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  flex: '1',
+                  minWidth: '80px'
                 }}
               >
                 <span style={{ marginRight: '8px', fontSize: '16px' }}>🗑️</span>
-                Delete
+                <span className="desktop-only">Delete</span>
               </button>
             )}
 
