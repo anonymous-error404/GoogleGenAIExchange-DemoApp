@@ -130,28 +130,28 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
   }
 
   // Helper functions for verification display
-  function getVerificationBannerStyle(verdict: string) {
-    const lowerVerdict = verdict.toLowerCase()
-    if (lowerVerdict.includes('true') || lowerVerdict.includes('accurate') || lowerVerdict.includes('real')) {
-      return {
-        backgroundColor: '#10b981',
-        color: 'white',
-        borderColor: '#059669'
-      }
-    } else if (lowerVerdict.includes('false') || lowerVerdict.includes('misinformation') || lowerVerdict.includes('fake')) {
-      return {
-        backgroundColor: '#ef4444',
-        color: 'white',
-        borderColor: '#dc2626'
-      }
-    } else {
-      return {
-        backgroundColor: '#f59e0b',
-        color: 'white',
-        borderColor: '#d97706'
-      }
-    }
-  }
+  // function getVerificationBannerStyle(verdict: string) {
+  //   const lowerVerdict = verdict.toLowerCase()
+  //   if (lowerVerdict.includes('true') || lowerVerdict.includes('accurate') || lowerVerdict.includes('real')) {
+  //     return {
+  //       backgroundColor: '#10b981',
+  //       color: 'white',
+  //       borderColor: '#059669'
+  //     }
+  //   } else if (lowerVerdict.includes('false') || lowerVerdict.includes('misinformation') || lowerVerdict.includes('fake')) {
+  //     return {
+  //       backgroundColor: '#ef4444',
+  //       color: 'white',
+  //       borderColor: '#dc2626'
+  //     }
+  //   } else {
+  //     return {
+  //       backgroundColor: '#f59e0b',
+  //       color: 'white',
+  //       borderColor: '#d97706'
+  //     }
+  //   }
+  // }
 
   function getVerificationIcon(verdict: string) {
     const lowerVerdict = verdict.toLowerCase()
@@ -164,16 +164,16 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
     }
   }
 
-  function getVerificationTitle(verdict: string) {
-    const lowerVerdict = verdict.toLowerCase()
-    if (lowerVerdict.includes('true') || lowerVerdict.includes('accurate') || lowerVerdict.includes('real')) {
-      return 'Verified as TRUE'
-    } else if (lowerVerdict.includes('false') || lowerVerdict.includes('misinformation') || lowerVerdict.includes('fake')) {
-      return 'Verified as FALSE'
-    } else {
-      return 'Verification UNCERTAIN'
-    }
-  }
+  // function getVerificationTitle(verdict: string) {
+  //   const lowerVerdict = verdict.toLowerCase()
+  //   if (lowerVerdict.includes('true') || lowerVerdict.includes('accurate') || lowerVerdict.includes('real')) {
+  //     return 'Verified as TRUE'
+  //   } else if (lowerVerdict.includes('false') || lowerVerdict.includes('misinformation') || lowerVerdict.includes('fake')) {
+  //     return 'Verified as FALSE'
+  //   } else {
+  //     return 'Verification UNCERTAIN'
+  //   }
+  // }
 
   function getConfidenceText(confidence: number) {
     if (confidence >= 0.8) {

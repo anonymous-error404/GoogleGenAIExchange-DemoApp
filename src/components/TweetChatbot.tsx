@@ -18,7 +18,7 @@ interface TweetChatbotProps {
   chatId?: string | null
 }
 
-export default function TweetChatbot({ tweetContent, verificationResult, tweetId, imageUrl, chatId }: TweetChatbotProps) {
+export default function TweetChatbot({ tweetContent, verificationResult,chatId }: TweetChatbotProps) {
   const [isOpen, setIsOpen] = useState(true)
   const [messages, setMessages] = useState<Message[]>([
     {
