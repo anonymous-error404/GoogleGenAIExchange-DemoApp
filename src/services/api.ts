@@ -308,14 +308,14 @@ class ApiService {
   }
 
   // Chat session endpoints (port 3000)
-  async createChatSession(userName: string, platformId: string) {
+  async createChatSession(userName: string, platformId: number) {
     return this.verificationRequest<{ message: string; chatId: string }>('/chat/session', {
       method: 'POST',
       body: JSON.stringify({ userName, platformId }),
     });
   }
 
-  async sendChatMessage(chatId: string, userName: string, platformId: string, query: string) {
+  async sendChatMessage(chatId: string, userName: string, platformId: number, query: string) {
     return this.verificationRequest<{ response: string }>('/chat/send', {
       method: 'POST',
       body: JSON.stringify({ chatId, userName, platformId, query }),
