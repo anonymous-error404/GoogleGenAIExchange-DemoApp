@@ -1,8 +1,8 @@
 // Use environment variable or fallback to localhost for development
 // Port 3001: User data, tweets, notifications, auth
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://googlegenaiexchange-backend-132180526643.us-central1.run.app/api';
 // Port 3000: Verifications and chatbots
-const VERIFICATION_API_BASE_URL = import.meta.env.VITE_VERIFICATION_API_BASE_URL || 'http://localhost:3000/api';
+const VERIFICATION_API_BASE_URL = 'https://reality-check-ai-agent-132180526643.us-central1.run.app/api';
 
 class ApiService {
   // Request method for main API (port 3001)
