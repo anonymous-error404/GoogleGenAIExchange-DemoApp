@@ -14,8 +14,8 @@ interface VerificationSidebarProps {
 export default function VerificationSidebar({ result, isVisible, onClose, tweetContent = '', tweetId, imageUrl, chatId }: VerificationSidebarProps) {
   if (!isVisible || !result) return null
 
-  const getVerdictInfo = (verdict: string) => {
-    const lowerVerdict = verdict.toLowerCase()
+  const getVerdictInfo = (verdict: string | undefined) => {
+    const lowerVerdict = String(verdict ?? '').toLowerCase()
     if (lowerVerdict.includes('true') || lowerVerdict.includes('accurate') || lowerVerdict.includes('real')) {
       return {
         color: '#10b981',
