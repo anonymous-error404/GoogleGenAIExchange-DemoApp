@@ -329,9 +329,9 @@ User Query: ${question}`
             <div className="quick-questions-buttons">
               <button
                 className="quick-question-btn"
-                onClick={() => handleQuickQuestion("Why was this marked as " + verificationResult.verdict.toLowerCase() + "?")}
+                onClick={() => handleQuickQuestion("Why was this marked as " + String(verificationResult?.verdict ?? '').toLowerCase() + "?")}
               >
-                Why {verificationResult.verdict.toLowerCase()}?
+                Why {String(verificationResult?.verdict ?? '').toLowerCase()}?
               </button>
               <button
                 className="quick-question-btn"
