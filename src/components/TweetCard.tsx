@@ -214,7 +214,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
       }
     }
 
-    const lowerVerdict = verificationResult.verdict.toLowerCase()
+    const lowerVerdict = String(verificationResult.verdict ?? '').toLowerCase()
     const confidence = verificationResult.confidence
     
     // Determine base color from verdict
