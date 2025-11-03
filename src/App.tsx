@@ -7,7 +7,6 @@ import UserProfilePage from './pages/UserProfile'
 import SettingsPage from './pages/Settings'
 import SearchPage from './pages/Search'
 import Login from './components/Login'
-import GlobalChatbot from './components/GlobalChatbot'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { getState, subscribe } from './store-mongodb'
 
@@ -35,7 +34,6 @@ export default function App() {
               <Route path="/search" element={<SearchPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Routes>
-            <GlobalChatbot />
           </ThemeProvider>
         )
 }
