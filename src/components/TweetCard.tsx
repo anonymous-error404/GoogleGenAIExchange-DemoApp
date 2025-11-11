@@ -154,7 +154,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
   // }
 
   function getVerificationIcon(verdict: string) {
-     const lowerVerdict = String(verificationResult.verdict ?? '').toLowerCase()
+      const lowerVerdict = String(verdict ?? '').toLowerCase()
     if (lowerVerdict.includes('true') || lowerVerdict.includes('accurate') || lowerVerdict.includes('real')) {
       return '✅'
     } else if (lowerVerdict.includes('false') || lowerVerdict.includes('misinformation') || lowerVerdict.includes('fake')) {
