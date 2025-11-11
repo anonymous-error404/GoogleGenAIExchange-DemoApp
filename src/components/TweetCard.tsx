@@ -254,7 +254,7 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
   const getVerificationBadge = () => {
     if (!isVerified || !verificationResult) return null
     
-    const lowerVerdict = verificationResult.verdict.toLowerCase()
+     const lowerVerdict = String(verificationResult.verdict ?? '').toLowerCase()
     
     if (lowerVerdict.includes('true') || lowerVerdict.includes('accurate') || lowerVerdict.includes('real')) {
       return {
