@@ -1,8 +1,5 @@
 import apiService from './services/api'
 
-const LAST_ACTIVITY_KEY = 'lastActivityAt'
-export const INACTIVITY_TIMEOUT_MS = 10 * 60 * 1000
-
 export type User = {
   _id: string
   handle: string
@@ -65,7 +62,6 @@ export type AppState = {
   userRetweets?: Record<string, string[]>
   userFollowing?: Record<string, string[]>
   userFollowers?: Record<string, string[]>
-  lastActivityAt: number | null
 }
 
 let state: AppState = {
@@ -77,8 +73,7 @@ let state: AppState = {
   notifications: [],
   searchQuery: '',
   loading: false,
-  error: null,
-  lastActivityAt: null
+  error: null
 }
 
 type Listener = () => void
@@ -102,33 +97,6 @@ export function getState(): AppState {
   return state
 }
 
-function getSavedLastActivity(): number | null {
-  const saved = localStorage.getItem(LAST_ACTIVITY_KEY)
-  if (!saved) return null
-  const parsed = parseInt(saved, 10)
-  return Number.isFinite(parsed) ? parsed : null
-}
-
-function saveLastActivity(timestamp: number): void {
-  localStorage.setItem(LAST_ACTIVITY_KEY, timestamp.toString())
-  setState({ lastActivityAt: timestamp })
-}
-
-function clearLastActivity(): void {
-  localStorage.removeItem(LAST_ACTIVITY_KEY)
-  setState({ lastActivityAt: null })
-}
-
-export function registerActivity(): void {
-  if (!state.isAuthenticated) return
-  saveLastActivity(Date.now())
-}
-
-export function hasSessionExpired(lastActivity: number | null): boolean {
-  if (!lastActivity) return false
-  return Date.now() - lastActivity > INACTIVITY_TIMEOUT_MS
-}
-
 // Initialize app data
 export async function initializeApp(): Promise<void> {
   setState({ loading: true, error: null })
@@ -137,32 +105,22 @@ export async function initializeApp(): Promise<void> {
     // Check if we have a current user in localStorage
     const savedUserId = localStorage.getItem('currentUserId')
     if (savedUserId) {
-      const lastActivity = getSavedLastActivity()
-      if (hasSessionExpired(lastActivity)) {
-        console.log('Session expired due to inactivity, clearing session')
-        localStorage.removeItem('currentUserId')
-        clearLastActivity()
-      } else {
       try {
         const user = await apiService.getUser(savedUserId)
         setState({
           currentUserId: user._id,
           isAuthenticated: true,
-            users: { [user._id]: user },
-            lastActivityAt: lastActivity ?? Date.now()
-          })
-          saveLastActivity(Date.now())
-        } catch (userError) {
-          // User doesn't exist in database, clear localStorage
-          console.log('User not found in database, clearing localStorage')
-          localStorage.removeItem('currentUserId')
-          clearLastActivity()
-          setState({
-            currentUserId: null,
-            isAuthenticated: false,
-            users: {}
-          })
-        }
+          users: { [user._id]: user }
+        })
+      } catch (userError) {
+        // User doesn't exist in database, clear localStorage
+        console.log('User not found in database, clearing localStorage')
+        localStorage.removeItem('currentUserId')
+        setState({
+          currentUserId: null,
+          isAuthenticated: false,
+          users: {}
+        })
       }
     }
 
@@ -249,13 +207,11 @@ export async function login(handle: string, name: string): Promise<void> {
     setState({
       users: { ...state.users, [user._id]: user },
       currentUserId: user._id,
-      isAuthenticated: true,
-      lastActivityAt: Date.now()
+      isAuthenticated: true
     })
     
     // Save to localStorage
     localStorage.setItem('currentUserId', user._id)
-    saveLastActivity(Date.now())
     
     // Load user-specific data
     await Promise.all([
@@ -279,13 +235,11 @@ export async function loginWithUser(user: User): Promise<void> {
     setState({
       users: { ...state.users, [user._id]: user },
       currentUserId: user._id,
-      isAuthenticated: true,
-      lastActivityAt: Date.now()
+      isAuthenticated: true
     })
     
     // Save to localStorage
     localStorage.setItem('currentUserId', user._id)
-    saveLastActivity(Date.now())
     
     // Set loading to false immediately so authentication completes
     setState({ loading: false })
@@ -307,11 +261,9 @@ export function logout(): void {
   setState({
     currentUserId: null,
     isAuthenticated: false,
-    notifications: [],
-    lastActivityAt: null
+    notifications: []
   })
   localStorage.removeItem('currentUserId')
-  clearLastActivity()
 }
 
 export async function switchAccount(userId: string): Promise<void> {
@@ -320,12 +272,10 @@ export async function switchAccount(userId: string): Promise<void> {
   
   setState({
     currentUserId: userId,
-    isAuthenticated: true,
-    lastActivityAt: Date.now()
+    isAuthenticated: true
   })
   
   localStorage.setItem('currentUserId', userId)
-  saveLastActivity(Date.now())
   
   // Load user-specific data
   await Promise.all([
@@ -600,11 +550,9 @@ export function clearAllData(): void {
     userLikes: {},
     userRetweets: {},
     userFollowing: {},
-    userFollowers: {},
-    lastActivityAt: null
+    userFollowers: {}
   })
   localStorage.clear()
-  clearLastActivity()
   console.log('All data cleared from localStorage and state')
 }
 
