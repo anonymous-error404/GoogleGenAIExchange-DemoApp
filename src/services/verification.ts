@@ -1,10 +1,19 @@
 import api from './api'
 
+export interface VerificationSource {
+  headline: string
+  link: string
+  publication?: string
+}
+
 export interface VerificationResult {
   verdict: string
   confidence: number
   reason: string
   awareness_factor?: string
+  // Optional extended fields from the verification backend
+  context?: string
+  sources?: VerificationSource[]
 }
 
 export async function verifyTweetContent(tweetId: string | number | undefined, content: string, username: string, socialMediaType: string = 'twitter', imageUrl?: string): Promise<VerificationResult | null> {
