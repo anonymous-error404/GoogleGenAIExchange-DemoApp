@@ -152,8 +152,11 @@ export default function Layout({ children }: PropsWithChildren) {
                 </div>
               </div>
               
-              <button 
-                onClick={logout}
+         <button 
+                onClick={(event) => {
+                  event.preventDefault()
+                  logout()
+                }}
                 className="btn btn-secondary btn-sm"
                 style={{
                   width: '100%',
