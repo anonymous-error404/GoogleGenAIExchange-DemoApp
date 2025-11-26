@@ -3,6 +3,11 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://googlegenaiexchange-backend-132180526643.us-central1.run.app/api';
 // Port 3000: Verifications and chatbots
 const VERIFICATION_API_BASE_URL = 'https://googlegenaiexchange-realitycheckagent-132180526643.us-central1.run.app/api';
+let authToken: string | null = null;
+
+export function setApiAuthToken(token: string | null) {
+  authToken = token || null;
+}
 
 class ApiService {
   // Request method for main API (port 3001)
@@ -11,6 +16,7 @@ class ApiService {
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
         ...options.headers,
       },
       ...options,
@@ -58,6 +64,7 @@ class ApiService {
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
         ...options.headers,
       },
       ...options,
