@@ -4,14 +4,13 @@ import TweetComposer from '../components/TweetComposer'
 import TweetCard from '../components/TweetCard'
 import Notifications from '../components/Notifications'
 // import { useRealtime } from '../hooks/useRealtime' // Temporarily disabled
-import { getState, subscribe, getFollowingFeed, initializeApp } from '../store-mongodb'
+import { getState, subscribe, getFollowingFeed } from '../store-mongodb'
 
 export default function HomePage() {
   const [state, setState] = useState(getState())
   // useRealtime() // Temporarily disabled to prevent invalid tweet creation
   
   useEffect(() => {
-    initializeApp()
     return subscribe(() => setState(getState()))
   }, [])
 
