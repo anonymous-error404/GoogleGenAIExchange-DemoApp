@@ -5,7 +5,6 @@ import SearchBar from './SearchBar'
 
 export default function Layout({ children }: PropsWithChildren) {
   const [state, setState] = useState(getState())
-  const [isSidebarMinimized, setIsSidebarMinimized] = useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const location = useLocation()
   
@@ -28,7 +27,7 @@ export default function Layout({ children }: PropsWithChildren) {
   ]
 
   return (
-    <div className={`layout animate-fade-in ${isSidebarMinimized ? 'sidebar-minimized' : ''}`}>
+    <div className="layout animate-fade-in">
       {/* Mobile Sidebar Overlay */}
       {isMobileSidebarOpen && (
         <div 
@@ -152,7 +151,6 @@ export default function Layout({ children }: PropsWithChildren) {
                 </div>
               </div>
               
-         
               <button 
                 onClick={(event) => {
                   event.preventDefault()
@@ -242,21 +240,18 @@ export default function Layout({ children }: PropsWithChildren) {
       </div>
 
       {/* Left Sidebar */}
-      <aside className={`left-sidebar glass animate-slide-in ${isSidebarMinimized ? 'minimized' : ''}`} style={{ 
+      <aside className="left-sidebar glass animate-slide-in" style={{ 
         padding: '32px 24px',
         background: 'var(--bg-glass)',
         borderRight: '1px solid var(--border)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)'
       }}>
-        {/* Sidebar Header with Minimize Button */}
+        {/* Sidebar Header */}
         <div className="desktop-only" style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
           marginBottom: '40px'
         }}>
-          <div className="animate-float" style={{ flex: 1 }}>
+          <div className="animate-float">
             <h1 className="text-gradient" style={{ 
               fontSize: '32px', 
               fontWeight: '900',
@@ -280,28 +275,6 @@ export default function Layout({ children }: PropsWithChildren) {
               Connect & Share ✨
             </p>
           </div>
-          <button
-            onClick={() => setIsSidebarMinimized(!isSidebarMinimized)}
-            className="btn btn-ghost btn-sm hover-lift"
-            style={{
-              padding: '8px',
-              borderRadius: '50%',
-              minWidth: 'auto',
-              width: '32px',
-              height: '32px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '16px',
-              color: 'var(--text-muted)',
-              background: 'var(--bg-tertiary)',
-              border: '1px solid var(--border)',
-              transition: 'all 0.3s ease'
-            }}
-            title={isSidebarMinimized ? 'Expand sidebar' : 'Minimize sidebar'}
-          >
-            {isSidebarMinimized ? '▶' : '◀'}
-          </button>
         </div>
 
         {/* Navigation */}
@@ -315,10 +288,10 @@ export default function Layout({ children }: PropsWithChildren) {
                 `btn btn-ghost ${isActive ? 'hover-glow' : ''} hover-lift animate-slide-in-up`
               }
               style={{ 
-                justifyContent: isSidebarMinimized ? 'center' : 'flex-start',
-                padding: isSidebarMinimized ? '16px 8px' : '16px 20px',
+                justifyContent: 'flex-start',
+                padding: '16px 20px',
                 borderRadius: 'var(--radius-xl)',
-                fontSize: isSidebarMinimized ? '20px' : '17px',
+                fontSize: '17px',
                 fontWeight: '600',
                 textDecoration: 'none',
                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -330,21 +303,14 @@ export default function Layout({ children }: PropsWithChildren) {
                 WebkitBackdropFilter: 'blur(10px)',
                 position: 'relative'
               }}
-              title={isSidebarMinimized ? item.label : undefined}
             >
               <span style={{ 
-                fontSize: isSidebarMinimized ? '20px' : '22px', 
-                marginRight: isSidebarMinimized ? '0' : '16px' 
+                fontSize: '22px', 
+                marginRight: '16px' 
               }}>
                 {item.icon}
               </span>
-              <span style={{ 
-                opacity: isSidebarMinimized ? 0 : 1,
-                transition: 'opacity 0.3s ease',
-                whiteSpace: 'nowrap'
-              }}>
-                {item.label}
-              </span>
+              <span style={{ whiteSpace: 'nowrap' }}>{item.label}</span>
             </NavLink>
           ))}
         </nav>
@@ -352,7 +318,7 @@ export default function Layout({ children }: PropsWithChildren) {
         {/* User Profile */}
         {currentUser && (
           <div className="card animate-slide-in-up" style={{ 
-            padding: isSidebarMinimized ? '16px 8px' : '24px',
+            padding: '24px',
             marginTop: 'auto',
             background: 'var(--bg-glass)',
             border: '1px solid var(--border)',
@@ -363,13 +329,13 @@ export default function Layout({ children }: PropsWithChildren) {
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
-              gap: isSidebarMinimized ? '0' : '16px', 
-              marginBottom: isSidebarMinimized ? '0' : '20px',
-              flexDirection: isSidebarMinimized ? 'column' : 'row'
+              gap: '16px', 
+              marginBottom: '20px',
+              flexDirection: 'row'
             }}>
               <div className="hover-scale" style={{ 
-                width: isSidebarMinimized ? '40px' : '56px', 
-                height: isSidebarMinimized ? '40px' : '56px', 
+                width: '56px', 
+                height: '56px', 
                 borderRadius: '50%', 
                 background: 'var(--gradient-primary)',
                 display: 'flex',
@@ -377,52 +343,48 @@ export default function Layout({ children }: PropsWithChildren) {
                 justifyContent: 'center',
                 color: 'white',
                 fontWeight: '800',
-                fontSize: isSidebarMinimized ? '16px' : '20px',
+                fontSize: '20px',
                 boxShadow: 'var(--shadow-lg)',
                 transition: 'all 0.3s ease'
               }}>
                 {currentUser.name.charAt(0).toUpperCase()}
               </div>
-              {!isSidebarMinimized && (
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ 
-                    fontWeight: '700', 
-                    fontSize: '16px',
-                    color: 'var(--text)',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}>
-                    {currentUser.name}
-                  </div>
-                  <div style={{ 
-                    color: 'var(--text-muted)', 
-                    fontSize: '14px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}>
-                    @{currentUser.handle}
-                  </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ 
+                  fontWeight: '700', 
+                  fontSize: '16px',
+                  color: 'var(--text)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  {currentUser.name}
                 </div>
-              )}
+                <div style={{ 
+                  color: 'var(--text-muted)', 
+                  fontSize: '14px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  @{currentUser.handle}
+                </div>
+              </div>
             </div>
             
-            {!isSidebarMinimized && (
-        <button 
-                onClick={(event) => {
-                  event.preventDefault()
-                  logout()
-                }}
-                className="btn btn-secondary btn-sm"
-                style={{
-                  width: '100%',
-                  fontSize: '14px'
-                }}
-              >
-                Sign Out
-              </button>
-            )}
+            <button 
+              onClick={(event) => {
+                event.preventDefault()
+                logout()
+              }}
+              className="btn btn-secondary btn-sm"
+              style={{
+                width: '100%',
+                fontSize: '14px'
+              }}
+            >
+              Sign Out
+            </button>
           </div>
         )}
       </aside>
