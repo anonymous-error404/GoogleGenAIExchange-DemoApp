@@ -1,4 +1,4 @@
-import apiService from './services/api'
+import apiService, { setApiAuthToken } from './services/api'
 
 export type User = {
   _id: string
@@ -57,11 +57,65 @@ export type AppState = {
   searchQuery: string
   loading: boolean
   error: string | null
+  authToken: string | null
+  authMessage: string | null
   userFeeds?: Record<string, string[]>
   userLikes?: Record<string, string[]>
   userRetweets?: Record<string, string[]>
   userFollowing?: Record<string, string[]>
   userFollowers?: Record<string, string[]>
+}
+
+const SESSION_USER_KEY = 'currentUserId'
+const SESSION_TOKEN_KEY = 'authToken'
+const LAST_ACTIVITY_KEY = 'lastActivityAt'
+export const INACTIVITY_TIMEOUT_MS = 10 * 60 * 1000
+export const INACTIVITY_LOGOUT_MESSAGE = 'You were logged out after 10 minutes of inactivity.'
+
+function recordActivityTimestampInternal(): number {
+  const now = Date.now()
+  try {
+    localStorage.setItem(LAST_ACTIVITY_KEY, String(now))
+  } catch (error) {
+    console.error('Failed to persist activity timestamp:', error)
+  }
+  return now
+}
+
+export function recordActivityTimestamp(): void {
+  recordActivityTimestampInternal()
+}
+
+export function hasSessionExpired(): boolean {
+  const last = Number(localStorage.getItem(LAST_ACTIVITY_KEY) || 0)
+  return !last || Date.now() - last >= INACTIVITY_TIMEOUT_MS
+}
+
+function persistSession(userId: string, token?: string | null): void {
+  try {
+    localStorage.setItem(SESSION_USER_KEY, userId)
+    if (token) {
+      localStorage.setItem(SESSION_TOKEN_KEY, token)
+      setApiAuthToken(token)
+    } else {
+      localStorage.removeItem(SESSION_TOKEN_KEY)
+      setApiAuthToken(null)
+    }
+    recordActivityTimestampInternal()
+  } catch (error) {
+    console.error('Failed to persist session:', error)
+  }
+}
+
+function clearSessionStorage(): void {
+  try {
+    localStorage.removeItem(SESSION_USER_KEY)
+    localStorage.removeItem(SESSION_TOKEN_KEY)
+    localStorage.removeItem(LAST_ACTIVITY_KEY)
+  } catch (error) {
+    console.error('Failed to clear session:', error)
+  }
+  setApiAuthToken(null)
 }
 
 let state: AppState = {
@@ -73,7 +127,9 @@ let state: AppState = {
   notifications: [],
   searchQuery: '',
   loading: false,
-  error: null
+  error: null,
+  authToken: null,
+  authMessage: null
 }
 
 type Listener = () => void
@@ -102,26 +158,42 @@ export async function initializeApp(): Promise<void> {
   setState({ loading: true, error: null })
   
   try {
-    // Check if we have a current user in localStorage
-    const savedUserId = localStorage.getItem('currentUserId')
-    if (savedUserId) {
+    const savedUserId = localStorage.getItem(SESSION_USER_KEY)
+    const savedToken = localStorage.getItem(SESSION_TOKEN_KEY)
+    const lastActivity = Number(localStorage.getItem(LAST_ACTIVITY_KEY) || 0)
+    const sessionExpired = !!savedUserId && !!savedToken && Date.now() - lastActivity >= INACTIVITY_TIMEOUT_MS
+
+    if (savedUserId && savedToken && !sessionExpired) {
       try {
+        setApiAuthToken(savedToken)
         const user = await apiService.getUser(savedUserId)
         setState({
           currentUserId: user._id,
           isAuthenticated: true,
-          users: { [user._id]: user }
+          users: { [user._id]: user },
+          authToken: savedToken,
+          authMessage: null
         })
+        recordActivityTimestampInternal()
       } catch (userError) {
-        // User doesn't exist in database, clear localStorage
-        console.log('User not found in database, clearing localStorage')
-        localStorage.removeItem('currentUserId')
+        console.log('User not found in database, clearing saved session')
+        clearSessionStorage()
         setState({
           currentUserId: null,
           isAuthenticated: false,
-          users: {}
+          users: {},
+          authToken: null
         })
       }
+    } else if (savedUserId || savedToken) {
+      clearSessionStorage()
+      setState({
+        currentUserId: null,
+        isAuthenticated: false,
+        users: {},
+        authToken: null,
+        authMessage: sessionExpired ? INACTIVITY_LOGOUT_MESSAGE : state.authMessage
+      })
     }
 
     // Load initial data
@@ -207,11 +279,12 @@ export async function login(handle: string, name: string): Promise<void> {
     setState({
       users: { ...state.users, [user._id]: user },
       currentUserId: user._id,
-      isAuthenticated: true
+      isAuthenticated: true,
+      authToken: null,
+      authMessage: null
     })
     
-    // Save to localStorage
-    localStorage.setItem('currentUserId', user._id)
+    persistSession(user._id)
     
     // Load user-specific data
     await Promise.all([
@@ -227,19 +300,19 @@ export async function login(handle: string, name: string): Promise<void> {
 }
 
 // Login with user object directly (from API response)
-export async function loginWithUser(user: User): Promise<void> {
-  setState({ loading: true, error: null })
+export async function loginWithUser(user: User, token: string): Promise<void> {
+  setState({ loading: true, error: null, authMessage: null })
   
   try {
+    persistSession(user._id, token)
     // Update users map
     setState({
       users: { ...state.users, [user._id]: user },
       currentUserId: user._id,
-      isAuthenticated: true
+      isAuthenticated: true,
+      authToken: token,
+      authMessage: null
     })
-    
-    // Save to localStorage
-    localStorage.setItem('currentUserId', user._id)
     
     // Set loading to false immediately so authentication completes
     setState({ loading: false })
@@ -257,13 +330,21 @@ export async function loginWithUser(user: User): Promise<void> {
   }
 }
 
-export function logout(): void {
+export function logout(reason?: string): void {
   setState({
     currentUserId: null,
     isAuthenticated: false,
-    notifications: []
+    notifications: [],
+    authToken: null,
+    authMessage: reason || null
   })
-  localStorage.removeItem('currentUserId')
+  clearSessionStorage()
+}
+
+export function clearAuthMessage(): void {
+  if (state.authMessage) {
+    setState({ authMessage: null })
+  }
 }
 
 export async function switchAccount(userId: string): Promise<void> {
@@ -272,10 +353,11 @@ export async function switchAccount(userId: string): Promise<void> {
   
   setState({
     currentUserId: userId,
-    isAuthenticated: true
+    isAuthenticated: true,
+    authMessage: null
   })
   
-  localStorage.setItem('currentUserId', userId)
+  persistSession(userId, state.authToken || undefined)
   
   // Load user-specific data
   await Promise.all([
@@ -546,12 +628,15 @@ export function clearAllData(): void {
     loading: false,
     theme: 'light',
     searchQuery: '',
+    authToken: null,
+    authMessage: null,
     userFeeds: {},
     userLikes: {},
     userRetweets: {},
     userFollowing: {},
     userFollowers: {}
   })
+  clearSessionStorage()
   localStorage.clear()
   console.log('All data cleared from localStorage and state')
 }
