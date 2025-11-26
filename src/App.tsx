@@ -72,17 +72,10 @@ export default function App() {
 
   if (!bootstrapped) {
     return (
-      <ThemeProvider>
-        <div className="app-loading-state" style={{ 
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '1.25rem',
-          color: 'var(--text)',
-          background: 'var(--bg-primary)'
-        }}>
-          Loading experience...
+ <ThemeProvider>
+        <div className="app-loading-state">
+          <div className="app-loading-spinner" aria-hidden="true" />
+          <span>Preparing your feed…</span>
         </div>
       </ThemeProvider>
     )
