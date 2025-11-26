@@ -1,7 +1,7 @@
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 // keep existing store login to avoid breaking flows
-import { loginWithUser } from '../store-mongodb'
+import { loginWithUser, getState, subscribe, clearAuthMessage } from '../store-mongodb'
 import apiService from '../services/api'
 
 export default function Login() {
@@ -14,10 +14,18 @@ export default function Login() {
   const [bio, setBio] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [authMessage, setAuthMessage] = useState(() => getState().authMessage)
+
+  useEffect(() => {
+    return subscribe(() => setAuthMessage(getState().authMessage))
+  }, [])
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
+    if (authMessage) {
+      clearAuthMessage()
+    }
     try {
       setLoading(true)
       if (mode === 'register') {
@@ -25,14 +33,20 @@ export default function Login() {
         const res = await apiService.register({ handle: handle.trim(), name: name.trim(), email: email.trim(), password: password.trim(), bio: bio.trim() || undefined })
         console.log('[REGISTER SUCCESS]', res)
         // Login to local store with user object from API response
-        await loginWithUser(res.user)
+        if (!res.token) {
+          throw new Error('Missing authentication token from server response')
+        }
+        await loginWithUser(res.user, res.token)
         navigate('/')
       } else {
         if (!handle.trim() || !password.trim()) return
         const res = await apiService.login({ handle: handle.trim(), password: password.trim() })
         console.log('[LOGIN SUCCESS]', res)
         // Login to local store with user object from API response
-        await loginWithUser(res.user)
+        if (!res.token) {
+          throw new Error('Missing authentication token from server response')
+        }
+        await loginWithUser(res.user, res.token)
         navigate('/')
       }
     } catch (err: any) {
@@ -134,17 +148,43 @@ export default function Login() {
             margin: 0,
             fontWeight: '500'
           }}>
-            Connect, Share, and Discover <br/>
-            For accessing the app, create an account <br/>
-            or use demo credentials : <br/>
-            demo username : Yash <br/>
-            demo password : 1234 <br/>
+            Connect, Share, and Discover
           </p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '24px' }}>
           {error && (
             <div style={{ color: '#ef4444', fontWeight: 600, fontSize: 14 }}>{error}</div>
+          )}
+          {authMessage && (
+            <div style={{ 
+              color: 'var(--primary)', 
+              fontWeight: 600, 
+              fontSize: 14, 
+              background: 'rgba(79,70,229,0.15)',
+              border: '1px solid rgba(79,70,229,0.3)',
+              padding: '12px 16px',
+              borderRadius: '12px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span>{authMessage}</span>
+              <button
+                type="button"
+                onClick={clearAuthMessage}
+                style={{ 
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'inherit',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                ×
+              </button>
+            </div>
           )}
           <div>
             <label style={{ 
