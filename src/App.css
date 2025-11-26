@@ -4,3 +4,33 @@
   min-height: 100vh;
   text-align: initial;
 }
+
+.app-loading-state {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--text);
+  background: var(--bg-primary);
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent, #1d9bf0);
+  animation: app-spin 1s linear infinite;
+}
+
+@keyframes app-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
