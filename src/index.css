@@ -139,44 +139,16 @@ body::before {
   transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Minimized sidebar layout */
-.layout.sidebar-minimized {
-  grid-template-columns: 80px 1fr 360px;
-}
-
-.layout.sidebar-minimized .left-sidebar {
-  width: 80px;
-  padding: 32px 16px;
-}
-
-.layout.sidebar-minimized .left-sidebar .text-gradient {
-  font-size: 0;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-.layout.sidebar-minimized .left-sidebar p {
-  font-size: 0;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
 /* Mobile-first responsive breakpoints */
 @media (max-width: 1280px) {
   .layout {
     grid-template-columns: 240px 1fr 320px;
-  }
-  .layout.sidebar-minimized {
-    grid-template-columns: 80px 1fr 320px;
   }
 }
 
 @media (max-width: 1200px) {
   .layout {
     grid-template-columns: 220px 1fr;
-  }
-  .layout.sidebar-minimized {
-    grid-template-columns: 80px 1fr;
   }
   .right-sidebar {
     display: none;
