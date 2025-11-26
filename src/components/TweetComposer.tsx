@@ -237,7 +237,7 @@ export default function TweetComposer() {
               color: 'var(--text-muted)',
               fontWeight: '500'
             }}>
-              {text.length}/280
+               {text.length} characters
             </div>
           </div>
           <button 
